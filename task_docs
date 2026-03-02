@@ -1,0 +1,157 @@
+# Raise the Bar — Coding Test 1: LLM-powered Chat Task Tracker
+
+[Timebox](#timebox)
+
+[Goal](#goal)
+
+[Functional Requirements](#functional-requirements)
+
+[R1 — Create one or several tasks from user input](#r1-—-create-one-or-several-tasks-from-user-input)
+
+[R2 — Complete tasks from user input](#r2-—-complete-tasks-from-user-input)
+
+[R3 — Attach free-text details to tasks](#r3-—-attach-free-text-details-to-tasks)
+
+[Interfaces](#interfaces)
+
+[Chat interface](#chat-interface)
+
+[Web interface](#web-interface)
+
+[System Behavior Requirements](#system-behavior-requirements)
+
+[S1 — LLM-powered interpretation](#s1-—-llm-powered-interpretation)
+
+[S2 — Idempotency / duplicates](#s2-—-idempotency-/-duplicates)
+
+[S3 — Small task-set assumption](#s3-—-small-task-set-assumption)
+
+[S4 — Conversational context](#s4-—-conversational-context)
+
+[S5 — System reset](#s5-—-system-reset)
+
+[Tech Constraints](#tech-constraints)
+
+[Deliverables](#deliverables)
+
+# Timebox {#timebox}
+
+4–6 hours.
+
+# Goal {#goal}
+
+Build a small LLM-powered chat task tracker that turns a stream of chat messages into structured tasks, supports completing tasks and attaching free-text details, and provides a simple read-only web UI to view tasks.
+
+This test is designed to evaluate:
+
+* Practical product engineering with LLMs (prompting, tool/function calling, guardrails)  
+* Backend fundamentals (idempotency, persistence, correctness)  
+* End-to-end wiring (chat input → LLM → actions → storage → web view)
+
+# Functional Requirements {#functional-requirements}
+
+## R1 — Create one or several tasks from user input {#r1-—-create-one-or-several-tasks-from-user-input}
+
+From a single user message, the system must be able to create one or multiple tasks.
+
+* The exact syntax is intentionally open-ended: the LLM decides whether the message implies 1 task, multiple tasks, or none.  
+* The system must reply in chat with a clear summary of what was created.
+
+## R2 — Complete tasks from user input {#r2-—-complete-tasks-from-user-input}
+
+From a user message, the system must be able to mark tasks as completed.
+
+* The user may reference tasks by partial title, approximate wording, or index.  
+* The LLM decides which task(s) the user intends (assuming a small task set).  
+* If the intent is unclear, the assistant should ask a short clarifying question.
+
+## R3 — Attach free-text details to tasks {#r3-—-attach-free-text-details-to-tasks}
+
+From a user message, the system must be able to append free-text details to a task.
+
+* These details may represent notes, updates, “commit-like” entries, or any operational context.  
+* The LLM decides which task the detail belongs to.
+
+# Interfaces {#interfaces}
+
+## Chat interface {#chat-interface}
+
+Provide a way to send messages and display replies.
+
+* “Ugly but functional” is fine.  
+* Acceptable: minimal web page, CLI, or HTTP endpoint with a small client.
+
+## Web interface {#web-interface}
+
+Provide a simple read-only web UI to view tasks.
+
+* Must include a task list.  
+* Must include a task detail view showing attached details.  
+* Good-to-have: allow completing tasks from the web UI.
+
+# System Behavior Requirements {#system-behavior-requirements}
+
+## S1 — LLM-powered interpretation {#s1-—-llm-powered-interpretation}
+
+All user-facing interpretation (create/complete/attach detail) must be LLM-powered.
+
+* The implementation may use tool/function calling, structured outputs, or a planner/executor pattern.  
+* Rule-based parsing is allowed only as an optimization or fallback; the primary behavior should come from the LLM.
+
+## S2 — Idempotency / duplicates {#s2-—-idempotency-/-duplicates}
+
+The system must not duplicate effects when the same/similar inbound message is processed multiple times.
+
+* If the same inbound message is received twice, it must not create duplicate tasks or duplicate details.  
+* The design should explain how idempotency is achieved.  
+* Include at least one test or demo script that proves idempotency.
+
+## S3 — Small task-set assumption {#s3-—-small-task-set-assumption}
+
+Assume a small number of tasks (e.g., dozens, not thousands).
+
+* This enables LLM inference based on the current task list.  
+* You may choose how much task context to provide to the LLM.
+
+## S4 — Conversational context {#s4-—-conversational-context}
+
+The system may keep prior messages in the LLM context window to improve interpretation.
+
+* You decide how to store and retrieve conversation history.  
+* You decide how to prevent runaway prompt growth.
+
+## S5 — System reset {#s5-—-system-reset}
+
+Provide a simple way to reset the system state to a clean slate to simplify testing.
+
+Acceptable approaches include:
+
+* a CLI command (e.g. `pnpm reset`)  
+* HTTP endpoint (e.g. `POST /admin/reset`)  
+* A “reset” chat command
+
+# Tech Constraints {#tech-constraints}
+
+* The backend must be TypeScript/Node.  
+* Storage: any persistent DB choice (SQLite/Postgres/etc.) is acceptable.  
+* Any TS backend framework is acceptable.  
+* Any library/ framework for LLM or chat interactions are allowed  
+* Any LLM model that will do the job for the chat-based interaction\*
+
+**\*I’d look at LLM models with a generous free tier: Grok, Gemini, perhaps OpenRouter.**
+
+# Deliverables {#deliverables}
+
+* A repo with setup and run instructions.  
+* A short README covering:  
+  * Architecture overview (components and boundaries)  
+  * How the LLM is used (prompting approach, tool/function schema if used)  
+  * Idempotency approach (and why it works)  
+  * Key tradeoffs and what you’d improve next  
+* A runnable demo path:  
+  * Start backend \+ UI  
+  * Show 3 short demo interactions:  
+    1. Create multiple tasks from one message  
+    2. Complete a task from a natural instruction  
+    3. Attach a detail to a task  
+  * Demonstrate idempotency requirement
