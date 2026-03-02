@@ -2,7 +2,11 @@
 
 A conversational task management API where users create, complete, and annotate tasks through natural language. Built with Express, the Vercel AI SDK, OpenAI gpt-4o-mini, and PostgreSQL.
 
-## Setup & Run
+## Live Demo
+
+Try the live demo UI: https://ai-task-tracker-fe.vercel.app/
+
+## Setup & Run Locally
 
 **Prerequisites:** Node.js 18+, pnpm, PostgreSQL
 
@@ -80,10 +84,6 @@ Duplicate messages within a 5-minute window return the cached assistant response
 4. If not found, the message is processed normally and both messages are stored for future dedup.
 
 **Why it works:** Same content always produces the same hash, the DB unique constraint prevents duplicates, and the 5-minute window lets users legitimately repeat content later (e.g. "what are my tasks?" an hour apart) while catching rapid retries from network issues or double-clicks.
-
-## Live Demo
-
-Try the live demo UI: https://ai-task-tracker-fe.vercel.app/
 
 ## Demo
 
