@@ -117,7 +117,7 @@ curl -N http://localhost:3000/chat \
   -d '{"message": "What are my current tasks?"}'
 ```
 
-## Key Tradeoffs & What I'd Improve
+## Key Tradeoffs & Next tasks
 
 **Tradeoffs made:**
 
@@ -125,7 +125,7 @@ curl -N http://localhost:3000/chat \
 - **Server-side content hash vs. client idempotency key** — Clients don't need to generate keys, but identical content is treated as duplicate even from different logical intents.
 - **Single global conversation** — No session or user isolation. Simplifies implementation but doesn't scale to multiple users.
 
-**What I'd improve next:**
+**Next tasks:**
 
 - Message compaction/summarization for long conversations
 - Client-provided `Idempotency-Key` header for more precise dedup
