@@ -38,8 +38,10 @@ export async function processMessage(
 ): Promise<StreamTextResult<any, any>> {
   await storeMessage("user", content);
 
-  const recentMessages = await getRecentMessages();
-  const currentTasks = await getTasks();
+  const [recentMessages, currentTasks] = await Promise.all([
+    getRecentMessages(),
+    getTasks(),
+  ]);
 
   const result = streamText({
     model: openai("gpt-4o-mini"),
