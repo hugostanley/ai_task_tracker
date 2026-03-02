@@ -81,6 +81,10 @@ Duplicate messages within a 5-minute window return the cached assistant response
 
 **Why it works:** Same content always produces the same hash, the DB unique constraint prevents duplicates, and the 5-minute window lets users legitimately repeat content later (e.g. "what are my tasks?" an hour apart) while catching rapid retries from network issues or double-clicks.
 
+## Live Demo
+
+Try the live demo UI: https://ai-task-tracker-fe.vercel.app/
+
 ## Demo
 
 Reset state, then run the three interactions:
