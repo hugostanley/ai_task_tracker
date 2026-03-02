@@ -1,7 +1,8 @@
-import { pgTable, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, pgEnum, unique } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 const taskStatusEnum = pgEnum("status", ["todo", "completed"]);
+const messageRolesEnum = pgEnum("roles", ["user", "assistant"]);
 
 export const tasks = pgTable("tasks", (t) => ({
   id: t.integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -22,6 +23,18 @@ export const taskComments = pgTable("task_comments", (t) => ({
   createdAt: t.timestamp("created_at").notNull().defaultNow(),
   updatedAt: t.timestamp("updated_at").notNull().defaultNow(),
 }));
+
+export const messages = pgTable(
+  "messages",
+  (t) => ({
+    id: t.integer().primaryKey().generatedAlwaysAsIdentity(),
+    role: messageRolesEnum().notNull(),
+    content: t.text("content").notNull(),
+    contentHash: t.varchar("content_hash", { length: 64 }),
+    createdAt: t.timestamp("created_at").notNull().defaultNow(),
+  }),
+  (t) => [unique().on(t.contentHash)],
+);
 
 export const tasksRelations = relations(tasks, ({ many }) => ({
   comments: many(taskComments),

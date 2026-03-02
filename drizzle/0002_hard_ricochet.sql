@@ -1,1 +1,0 @@
-ALTER TABLE "task_comments" ALTER COLUMN "task_id" SET NOT NULL;

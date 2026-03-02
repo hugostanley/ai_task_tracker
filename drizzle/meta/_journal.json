@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1772451562826,
-      "tag": "0000_pink_living_lightning",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1772452824724,
-      "tag": "0001_icy_outlaw_kid",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1772452850505,
-      "tag": "0002_hard_ricochet",
+      "when": 1772464703906,
+      "tag": "0000_abnormal_blindfold",
       "breakpoints": true
     }
   ]
